@@ -51,11 +51,14 @@ endif
 
 BUILD_DIR	:= build
 BOOKNAME	:= $(shell echo $(PROJECT_NAME) | $(SED) 's/ /-/g' | $(TR) [A-Z] [a-z])
-METADATA	:= metadata.yml
-CHAPTERS	:= $(wildcard frontmatter/*.md) $(wildcard chapters/ch*.md) $(wildcard backmatter/*.md)
+METADATA	:= metadata/metadata.yml
+CHAPTERS	:= $(wildcard frontmatter/*.md) \
+		   $(wildcard chapters/ch*.md) \
+		   $(wildcard backmatter/*.md)
 JOURNALS	:= $(wildcard journal/*.md)
 
 COVER_IMAGE	:= images/cover.jpg
+IMAGE_FILES	:= $(wildcard images/*) 
 
 TOC		:= --toc --toc-depth=2
 LATEX_CLASS	:= book
@@ -101,12 +104,12 @@ check:						## Display Makefile diagnostics
 	@echo "         JOURNALS = $(JOURNALS)"
 	@echo "              TOC = $(TOC)"
 	@echo "      COVER_IMAGE = $(COVER_IMAGE)"
+	@echo "      IMAGE_FILES = $(IMAGE_FILES)"
 	@echo ""
 	@echo "---------------"
 	@echo "TOOLCHAIN PATHS"
 	@echo "---------------"
 	@echo "      PACKAGE_LOC = $(PACKAGE_LOC)"
-	@echo ""
 	@echo "              AWK = $(AWK)"
 	@echo "    EBOOK_CONVERT = $(EBOOK_CONVERT)"
 	@echo "             GREP = $(GREP)"
@@ -134,31 +137,31 @@ pdf: $(BUILD_DIR)/pdf/$(BOOKNAME).pdf			## Build the book in PDF format
 
 journal: $(BUILD_DIR)/pdf/$(BOOKNAME)_journal.pdf	## Build the book journal in PDF format
 
-$(BUILD_DIR)/pdf/$(BOOKNAME)_journal.pdf:
+$(BUILD_DIR)/pdf/$(BOOKNAME)_journal.pdf: $(JOURNALS)
 	$(MKDIR) -p $(BUILD_DIR)/pdf
 	$(PANDOC) $(TOC) -f gfm $(PDF_OPTIONS) -V documentclass=$(JOURNAL_CLASS) -o $@ $(JOURNALS)
 
-$(BUILD_DIR)/rtf/$(BOOKNAME)_journal.rtf:
+$(BUILD_DIR)/rtf/$(BOOKNAME)_journal.rtf: $(JOURNALS)
 	$(MKDIR) -p $(BUILD_DIR)/rtf
 	$(PANDOC) $(TOC) -f gfm $(PDF_OPTIONS) -V documentclass=$(JOURNAL_CLASS) -o $@ $(JOURNALS)
 
-$(BUILD_DIR)/epub/$(BOOKNAME).epub:
+$(BUILD_DIR)/epub/$(BOOKNAME).epub: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/epub
 	$(PANDOC) $(TOC) -f gfm $(EBOOK_OPTIONS) --standalone -o $@ $(CHAPTERS)
 
-$(BUILD_DIR)/mobi/$(BOOKNAME).mobi:
+$(BUILD_DIR)/mobi/$(BOOKNAME).mobi: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/mobi
 	$(PANDOC) $(TOC) -f gfm $(EBOOK_OPTIONS) --standalone -o $@ $(CHAPTERS)
 
-$(BUILD_DIR)/html/$(BOOKNAME).html:
+$(BUILD_DIR)/html/$(BOOKNAME).html: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/html
 	$(PANDOC) $(TOC) --standalone $(HTML_OPTIONS) -o $@ $^
 
-$(BUILD_DIR)/pdf/$(BOOKNAME).pdf:
+$(BUILD_DIR)/pdf/$(BOOKNAME).pdf: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/pdf
 	$(PANDOC) $(TOC) -f gfm $(PDF_OPTIONS) -V documentclass=$(LATEX_CLASS) -o $@ $(CHAPTERS)
 
-$(BUILD_DIR)/rtf/$(BOOKNAME).rtf:
+$(BUILD_DIR)/rtf/$(BOOKNAME).rtf: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/rtf
 	$(PANDOC) $(TOC) -f gfm $(PDF_OPTIONS) -V documentclass=$(LATEX_CLASS) -o $@ $(CHAPTERS)
 
@@ -168,7 +171,7 @@ help: 							## Show this help message
 	@echo ""
 	@echo "The following Makefile targets are available:"
 	@echo ""
-	@$(GREP) -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | $(AWK) 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@$(GREP) -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | $(SORT) | $(AWK) 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: all book clean epub html pdf check help
 

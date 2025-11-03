@@ -13,7 +13,7 @@ a Makefile.
 
 ## Installing and running
 
-1.  If you have not already done so, install:
+1. If you have not already done so, install:
     - [git](http://git-scm.com/)
     - [make](http://www.gnu.org/software/make/) (OS X users should
       install XCode and [download the command line
@@ -23,11 +23,11 @@ a Makefile.
       install [MacTex](http://tug.org/mactex/).)
     - **NetBSD Users**: `pkgin install gsed gsort gawk coreutils diffutils`
 
-2.  Clone this repo with **git**.
+2. Clone this repo with **git**.
 
-3.  From the top of the project, type `make book` or simply, `make`.
-    This generates three versions of the sample book in a `build/`
-    directory.
+3. From the top of the project, type `make book` or simply, `make`.
+   This generates three versions of the sample book in a `build/`
+   directory.
 
 ## Replacing the sample material
 
@@ -67,4 +67,3 @@ Makefile targets, and you can put whatever you want in them.
 I maintain a journal as part of my writing process. The files for this live in
 the `journals/` directory, and there's a "make journal" Makefile target to
 compile it to a PDF.
-

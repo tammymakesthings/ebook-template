@@ -1,0 +1,23 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+        args:
+            - --markdown-linebreak-ext=md
+    -   id: mixed-line-ending
+    -   id: check-added-large-files
+        args:
+            - --maxkb=2048
+    -   id: check-case-conflict
+    -   id: check-merge-conflict
+    -   id: destroyed-symlinks
+    -   id: fix-byte-order-marker
+- repo: https://github.com/jumanjihouse/pre-commit-hooks
+  rev: 3.0.0  # or specific git tag
+  hooks:
+    - id: markdownlint # Configure in .mdlrc
+      args:
+          - --git-recurse
+          - --ignore-front-matter

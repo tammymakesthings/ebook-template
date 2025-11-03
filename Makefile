@@ -58,7 +58,7 @@ CHAPTERS	:= $(wildcard frontmatter/*.md) \
 JOURNALS	:= $(wildcard journal/*.md)
 
 COVER_IMAGE	:= images/cover.jpg
-IMAGE_FILES	:= $(wildcard images/*) 
+IMAGE_FILES	:= $(wildcard images/*)
 
 TOC		:= --toc --toc-depth=2
 LATEX_CLASS	:= book
@@ -174,4 +174,3 @@ help: 							## Show this help message
 	@$(GREP) -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | $(SORT) | $(AWK) 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: all book clean epub html pdf check help
-

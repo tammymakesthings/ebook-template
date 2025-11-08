@@ -1,5 +1,8 @@
 # -*- Makefile; encoding: utf-8 -*-
+# SPDX-FileCopyright-Text: 2025, Tammy Cravit.
+# SPDX-LicenseIdentifier: MIT
 ##############################################################################
+# Markdown Book Makefile - tammy@tammymakesthings.com - 2025-11-08
 ##############################################################################
 
 MKFILE_PATH     := $(abspath $(lastword $(MAKEFILE_LIST)))
@@ -51,6 +54,7 @@ endif
 
 BUILD_DIR	:= build
 BOOKNAME	:= $(shell echo $(PROJECT_NAME) | $(SED) 's/ /-/g' | $(TR) [A-Z] [a-z])
+TOOL_BINS       := $(AWK) $(GREP) $(MKDIR) $(PANDOC) $(SED) $(SORT) $(TR) $(XELATEX) $(EBOOK_CONVERT)
 METADATA	:= metadata/metadata.yml
 CHAPTERS	:= $(wildcard frontmatter/*.md) \
 		   $(wildcard chapters/ch*.md) \
@@ -106,10 +110,21 @@ check:						## Display Makefile diagnostics
 	@echo "      COVER_IMAGE = $(COVER_IMAGE)"
 	@echo "      IMAGE_FILES = $(IMAGE_FILES)"
 	@echo ""
-	@echo "---------------"
-	@echo "TOOLCHAIN PATHS"
-	@echo "---------------"
+
+toolchain: 					## Display toolchain paths
+	@echo ""
+	@echo "=========================| TOOLCHAIN PATHS |=========================="
+	@echo ""
+	@echo "-------------"
+	@echo "PACKAGE TYPE"
+	@echo "-------------"
+	@echo ""
 	@echo "      PACKAGE_LOC = $(PACKAGE_LOC)"
+	@echo ""
+	@echo "----------------"
+	@echo "BINARY LOCATIONS"
+	@echo "----------------"
+	@echo ""
 	@echo "              AWK = $(AWK)"
 	@echo "    EBOOK_CONVERT = $(EBOOK_CONVERT)"
 	@echo "             GREP = $(GREP)"
@@ -139,30 +154,37 @@ journal: $(BUILD_DIR)/pdf/$(BOOKNAME)_journal.pdf	## Build the book journal in P
 
 $(BUILD_DIR)/pdf/$(BOOKNAME)_journal.pdf: $(JOURNALS)
 	$(MKDIR) -p $(BUILD_DIR)/pdf
+	(cd metadata; ./update-metadata.sh)
 	$(PANDOC) $(TOC) -f gfm $(PDF_OPTIONS) -V documentclass=$(JOURNAL_CLASS) -o $@ $(JOURNALS)
 
 $(BUILD_DIR)/rtf/$(BOOKNAME)_journal.rtf: $(JOURNALS)
 	$(MKDIR) -p $(BUILD_DIR)/rtf
+	(cd metadata; ./update-metadata.sh)
 	$(PANDOC) $(TOC) -f gfm $(PDF_OPTIONS) -V documentclass=$(JOURNAL_CLASS) -o $@ $(JOURNALS)
 
 $(BUILD_DIR)/epub/$(BOOKNAME).epub: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/epub
+	(cd metadata; ./update-metadata.sh)
 	$(PANDOC) $(TOC) -f gfm $(EBOOK_OPTIONS) --standalone -o $@ $(CHAPTERS)
 
 $(BUILD_DIR)/mobi/$(BOOKNAME).mobi: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/mobi
+	(cd metadata; ./update-metadata.sh)
 	$(PANDOC) $(TOC) -f gfm $(EBOOK_OPTIONS) --standalone -o $@ $(CHAPTERS)
 
 $(BUILD_DIR)/html/$(BOOKNAME).html: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/html
+	(cd metadata; ./update-metadata.sh)
 	$(PANDOC) $(TOC) --standalone $(HTML_OPTIONS) -o $@ $^
 
 $(BUILD_DIR)/pdf/$(BOOKNAME).pdf: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/pdf
+	(cd metadata; ./update-metadata.sh)
 	$(PANDOC) $(TOC) -f gfm $(PDF_OPTIONS) -V documentclass=$(LATEX_CLASS) -o $@ $(CHAPTERS)
 
 $(BUILD_DIR)/rtf/$(BOOKNAME).rtf: $(CHAPTERS) $(IMAGE_FILES) $(METADATA)
 	$(MKDIR) -p $(BUILD_DIR)/rtf
+	(cd metadata; ./update-metadata.sh)
 	$(PANDOC) $(TOC) -f gfm $(PDF_OPTIONS) -V documentclass=$(LATEX_CLASS) -o $@ $(CHAPTERS)
 
 help: 							## Show this help message
@@ -173,4 +195,4 @@ help: 							## Show this help message
 	@echo ""
 	@$(GREP) -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | $(SORT) | $(AWK) 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-.PHONY: all book clean epub html pdf check help
+.PHONY: all book clean epub html pdf check help toolchain

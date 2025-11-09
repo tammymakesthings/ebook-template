@@ -28,16 +28,14 @@ repos:
           - --ignore-front-matter
 - repo: https://github.com/pycqa/isort
   rev: 5.13.2
-  files:
-    - scripts/*.py
   hooks:
     - id: isort
+      files: \.py$
 - repo: https://github.com/psf/black-pre-commit-mirror
   rev: 25.9.0
-  files:
-    - scripts/*.py
   hooks:
     - id: black
+      files: \.py$
       args:
           - --line-length=90
           - --target-version=py313

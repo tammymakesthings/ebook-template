@@ -132,7 +132,7 @@ else
 endif
 endif
 
-countj:						## Count the words in the journals
+count-j:						## Count the words in the journals
 ifeq ($(MWC), "mwc not found")
 	$(error Cannot log word counts: mwc not found. Run 'pip install markdown-word-count' to fix.)
 else
@@ -143,7 +143,7 @@ else
 endif
 endif
 
-counts:						## Count the words in the scene files
+count-s:						## Count the words in the scene files
 ifeq ($(MWC), "mwc not found")
 	$(error Cannot log word counts: mwc not found. Run 'pip install markdown-word-count' to fix.)
 else
@@ -155,7 +155,7 @@ else
 endif
 endif
 
-countall:						## Count the words in all content files
+count-a:						## Count the words in all content files
 ifeq ($(MWC), "mwc not found")
 	$(error Cannot log word counts: mwc not found. Run 'pip install markdown-word-count' to fix.)
 else

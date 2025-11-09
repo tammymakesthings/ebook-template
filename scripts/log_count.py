@@ -1,14 +1,18 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3 -w                      -*- Python; encoding: utf-8 -*-
+##############################################################################
+# log_count.py: Word count logging for markdown ebook projects
+# SPDX-Copyright-Text: 2025, Tammy Cravit <tammy@tammymakesthings.com>
+# SPDX-LicenseIdnetifier: MIT
+##############################################################################
 
 import argparse
 import csv
+import logging
 import shutil
 import sys
 from datetime import datetime
 from pathlib import Path
 from tempfile import NamedTemporaryFile
-import logging
-
 
 #: The path to this script - used to find the wordcount.csv file
 SCRIPT_PATH: Path = Path(__file__)

@@ -26,3 +26,20 @@ repos:
       args:
           - --git-recurse
           - --ignore-front-matter
+- repo: https://github.com/pycqa/isort
+  rev: 5.13.2
+  files:
+    - scripts/*.py
+  hooks:
+    - id: isort
+- repo: https://github.com/psf/black-pre-commit-mirror
+  rev: 25.9.0
+  files:
+    - scripts/*.py
+  hooks:
+    - id: black
+      args:
+          - --line-length=90
+          - --target-version=py313
+          - -x
+      language_version: python3.13
